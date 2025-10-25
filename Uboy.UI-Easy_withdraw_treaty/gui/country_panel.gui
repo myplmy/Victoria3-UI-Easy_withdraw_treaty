@@ -2665,7 +2665,7 @@ types country_panel_treaties_types
 						tooltip = "GO_TO_TREATY"
 						onclick = "[InformationPanelBar.OpenTreatyPanel( Treaty.Self )]"
 					}
-                    ### Uboy.UI-EASY_END_TREATY
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY
                     button_icon_cancel = {
 						parentanchor = vcenter
                         margin_left = 5
@@ -2674,7 +2674,7 @@ types country_panel_treaties_types
 						enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
 						onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
 					}
-                    ### Uboy.UI-EASY_END_TREATY END
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY END
 				}
 			}
 

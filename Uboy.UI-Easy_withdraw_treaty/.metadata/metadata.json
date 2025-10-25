@@ -1,10 +1,10 @@
 {
-  "name" : "Uboy.UI-Easy end treaty",
-  "id" : "uboy.ui.easyendtreaty",
+  "name" : "Uboy.UI-Easy withdraw treaty",
+  "id" : "uboy.ui.easywithdrawtreaty",
   "version" : "1.0.1",
   "supported_game_version" : "1.11.*",
   "picture": "thumbnail.png",
-  "short_description" : "End treaty with context(rightclick) menu",
+  "short_description" : "Improves some UI elements for easier treaty withdrawal.",
   "tags" : ["Utilities","UI"],
   "relationships" : [],
   "game_custom_data" : {
