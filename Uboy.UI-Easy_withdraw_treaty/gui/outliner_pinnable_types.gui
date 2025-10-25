@@ -354,7 +354,10 @@ types pinnable_outliner_items {
 					autoresize = yes
 					align = nobaseline
 					using = elide_fontsize_min
-					max_width = 230
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED
+					#max_width = 230
+					max_width = 205
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED END
 					margin_left = 2
 					text = "[Treaty.GetNameNoFormatting]"
 				}
@@ -367,7 +370,7 @@ types pinnable_outliner_items {
 					using = elide_fontsize_min
                     ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED
 					#max_width = 260
-                    max_width = 230
+                    max_width = 205
                     ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED END
 					margin_left = 2
 					text = "[Treaty.GetNameNoFormatting]"
@@ -394,6 +397,15 @@ types pinnable_outliner_items {
                 tooltip = "TREATY_WITHDRAW_TOOLTIP"
                 enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
                 onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
+            }
+
+            button_icon_edit = {
+				parentanchor = right|vcenter
+                position = { -50 0 }
+                size = { 20 20 }
+                tooltip = "TREATY_RENEGOTIATE_TOOLTIP"
+                onclick = "[InformationPanelBar.OpenTreatyDraftPanel(Treaty.Self)]"
+                enabled = "[Not(Treaty.IsEnforced)]"
             }
             ### Uboy.UI-EASY_WITHDRAW_TREATY END
 		}
