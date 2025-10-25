@@ -365,7 +365,10 @@ types pinnable_outliner_items {
 					autoresize = yes
 					align = nobaseline
 					using = elide_fontsize_min
-					max_width = 260
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED
+					#max_width = 260
+                    max_width = 230
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED END
 					margin_left = 2
 					text = "[Treaty.GetNameNoFormatting]"
 				}                
