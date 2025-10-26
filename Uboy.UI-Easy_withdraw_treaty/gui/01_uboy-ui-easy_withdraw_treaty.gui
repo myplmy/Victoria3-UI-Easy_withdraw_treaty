@@ -1,0 +1,541 @@
+@panel_width_minus_10 = 530
+
+@entry_width = 350
+@entry_height = 30
+
+@entry_width_minus_50 = 300
+
+
+######################################
+# compact_treaty_item - modified
+# It's override vanilla country_panel_treaties_types - compact_treaty_item type
+######################################
+
+types uboy_ui_easy_withdraw_treaty_country_panel_treaties_types
+{
+	type compact_treaty_item = flowcontainer {
+		direction = vertical
+
+		block "full_background" {
+			using = entry_bg_fancy
+		}
+
+		# TREATY NAME & DURATION
+		widget = {
+			block "treaty_item_size" {
+				size = { @panel_width_minus_10 35 }
+			}
+
+			background = {
+				using = fade_center_colored_black
+			}
+
+			### NAME & GOTO BUTTON
+			flowcontainer = {
+				position = { 15 0 }
+				parentanchor = vcenter
+				spacing = 10
+
+				textbox = {
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					using = elide_fontsize_min
+					text = "[Treaty.GetName]"
+
+					block "treaty_name_max_width" {
+						max_width = 300
+					}
+				}
+
+				block "treaty_go_to_button" {
+					button_icon_goto = {
+						parentanchor = vcenter
+						size = { 26 26 }
+						using = tooltip_ne
+						tooltip = "GO_TO_TREATY"
+						onclick = "[InformationPanelBar.OpenTreatyPanel( Treaty.Self )]"
+					}
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY
+                    button_icon_cancel = {
+						parentanchor = vcenter
+                        margin_left = 5
+						size = { 26 26 }
+						tooltip = "TREATY_WITHDRAW_TOOLTIP"
+						enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
+						onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
+					}
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY END
+				}
+			}
+
+			flowcontainer = {
+				parentanchor = vcenter|right
+				position = { -5 0 }
+				spacing = 5
+
+				block "binding_period" {
+					### BINDING PERIOD
+					textbox = {
+						visible = "[NotZero(Treaty.GetBindingDaysLeft)]"
+						parentanchor = vcenter
+						align = nobaseline
+						autoresize = yes
+						max_width = 122
+						using = elide_fontsize_min
+						text = "[Treaty.GetBindingPeriodRemainingFormatted]"
+					}
+
+					### BINDING PERIOD HAS ENDED
+					textbox = {
+						visible = "[And(IsZero(Treaty.GetBindingDaysLeft), NotZero(Treaty.GetBindingDays))]"
+						parentanchor = vcenter
+						align = nobaseline
+						autoresize = yes
+						max_width = 122
+						using = elide_fontsize_min
+						text = "TREATY_BINDING_PERIOD_HAS_ENDED_SHORT"
+					}
+
+					### NO BINDING PERIOD SET TO BEGIN WITH
+					textbox = {
+						visible = "[And(IsZero(Treaty.GetBindingDaysLeft), IsZero(Treaty.GetBindingDays))]"
+						parentanchor = vcenter
+						align = nobaseline
+						autoresize = yes
+						max_width = 122
+						using = elide_fontsize_min
+						text = "TREATY_NO_BINDING_PERIOD"
+					}
+				}
+
+				block "treaty_pin_button" {
+					# pin button
+					widget = {
+						size = { 26 26 }
+						parentanchor = vcenter
+
+						button_icon_toggle_pin = {
+							name = "treaty_pin_button"
+							parentanchor = center
+
+							blockoverride "view_1" {
+								visible = "[Not(Treaty.IsPinnedInOutliner)]"
+							}
+
+							blockoverride "view_2" {
+								visible = "[Treaty.IsPinnedInOutliner]"
+							}
+
+							blockoverride "on_click" {
+								onclick = "[Treaty.TogglePinInOutliner]"
+							}
+						}
+					}
+				}
+			}
+		}
+
+		container = {
+			block "treaty_item_minimumsize" {
+				minimumsize = { @panel_width_minus_10 50 }
+			}
+
+			### MIDDLE BACKGROUND
+			background = {
+				using = fade_horizontal_center_colored
+				color = { .0 .0 .0 1 }
+			}
+
+			### LEFT BACKGROUND
+			icon = {
+				size = { 60% 100% }
+
+				background = {
+					using = fade_right_colored
+					color = "[Treaty.GetLeftCountry.GetMapColor]"
+
+					modify_texture = {
+						texture = "gfx/interface/backgrounds/entry_bg_mask.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 45 45 }
+						spriteborder_bottom = 0
+						blend_mode = alphamultiply
+						texture_density = 2
+						mirror = vertical
+					}
+				}
+			}
+
+			### RIGHT BACKGROUND
+			icon = {
+				parentanchor = right
+				size = { 60% 100% }
+
+				background = {
+					using = fade_left_colored
+					color = "[Treaty.GetRightCountry.GetMapColor]"
+
+					modify_texture = {
+						texture = "gfx/interface/backgrounds/entry_bg_mask.dds"
+						spriteType = Corneredstretched
+						spriteborder = { 45 45 }
+						spriteborder_bottom = 0
+						blend_mode = alphamultiply
+						texture_density = 2
+						mirror = vertical
+					}
+				}
+			}
+
+			### LEFT SIDE ARTICLES
+			flowcontainer = {
+				margin = { 0 10 }
+				margin_left = 10
+				datacontext = "[Treaty.GetLeftCountry]"
+				alpha = "[TransparentIfTrue(Treaty.IsFrozenFor(Country.Self))]"
+
+				dynamicgridbox = {
+					flipdirection = yes
+					datamodel = "[Treaty.GetOffers]"
+
+					block "treaty_item_articles_datamodel_wrap" {
+						datamodel_wrap = 3
+					}
+
+					item = {
+						article_icon_all_items = {}
+					}
+				}
+			}
+
+			### MIDDLE ARTICLES & FLAGS
+			flowcontainer = {
+				parentanchor = hcenter
+				margin = { 0 10 }
+				spacing = 10
+
+
+				flowcontainer = {
+					parentanchor = vcenter
+					direction = vertical
+					datacontext = "[Treaty.GetLeftCountry]"
+
+					widget = {
+						visible = "[And(Treaty.GetLeftCountry.IsPlayer, Not(Or(And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated), And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated)))))]"
+						parentanchor = vcenter
+						size = { 20 20 }
+					}
+
+					widget = {
+						visible = "[Not(Country.IsPlayer)]"
+						size = { 20 20 }
+						tooltip = "[Treaty.GetAcceptanceBreakdown(Country.Self)]"
+
+						icon = {
+							visible = "[LessThan_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"
+							position = { 5 0 }
+						}
+
+						icon = {
+							visible = "[EqualTo_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/undecided_icon.dds"
+							position = { 5 0 }
+						}
+
+						icon = {
+							visible = "[GreaterThan_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
+							position = { 5 0 }
+						}
+					}
+
+					widget = {
+						visible = "[Or(And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated), And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated)))]"
+						size = { 20 20 }
+
+						icon = {
+							visible = "[And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated)]"
+							parentanchor = center
+							size = { 20 20 }
+							position = { 5 0 }
+							using = tooltip_se
+							tooltip = "TREATY_COUNTRY_HAS_OWED_OBLIGATION_WITH_EXPLANATION"
+							texture = "gfx/interface/icons/generic_icons/obligation.dds"
+						}
+
+						icon = {
+							visible = "[And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated))]"
+							parentanchor = center
+							size = { 20 20 }
+							position = { 5 0 }
+							using = tooltip_se
+							tooltip = "TREATY_COUNTRY_WILL_OWE_OBLIGATION_WITH_EXPLANATION"
+							texture = "gfx/interface/icons/generic_icons/obligation.dds"
+						}
+					}
+				}
+
+				### LEFT COUNTRY FLAG
+				flowcontainer = {
+					margin_top = 5
+
+					small_flag = {
+						datacontext = "[Treaty.GetLeftCountry]"
+					}
+				}
+
+				### MUTUAL AGREEMENTS
+				dynamicgridbox = {
+					datacontext = "[Treaty.GetLeftCountry]"
+					datamodel = "[Treaty.GetMutualAgreements]"
+					alpha = "[TransparentIfTrue(Treaty.IsFrozenForBothCountries)]"
+
+					item = {
+						article_icon_all_items = {}
+					}
+				}
+
+				### RIGHT COUNTRY FLAG
+				flowcontainer = {
+					margin_top = 5
+
+					small_flag = {
+						datacontext = "[Treaty.GetRightCountry]"
+					}
+				}
+
+				flowcontainer = {
+					parentanchor = vcenter
+					direction = vertical
+					datacontext = "[Treaty.GetRightCountry]"
+
+					widget = {
+						visible = "[And(Treaty.GetRightCountry.IsPlayer, Not(Or(And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated), And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated)))))]"
+						parentanchor = vcenter
+						size = { 20 20 }
+					}
+
+					widget = {
+						visible = "[Not(Country.IsPlayer)]"
+						size = { 20 20 }
+						tooltip = "[Treaty.GetAcceptanceBreakdown(Country.Self)]"
+
+						icon = {
+							visible = "[LessThan_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/disapproval_icon.dds"
+							position = { -5 0 }
+						}
+
+						icon = {
+							visible = "[EqualTo_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/undecided_icon.dds"
+							position = { -5 0 }
+						}
+
+						icon = {
+							visible = "[GreaterThan_int32(Treaty.GetAcceptance(Country.Self), '(int32)0')]"
+							parentanchor = center
+							size = { 20 20 }
+							texture = "gfx/interface/icons/generic_icons/approval_icon.dds"
+							position = { -5 0 }
+						}
+					}
+
+					widget = {
+						visible = "[Or(And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated), And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated)))]"
+						size = { 20 20 }
+
+						icon = {
+							visible = "[And(Treaty.DoesOweObligation(Country.Self), Treaty.AreObligationsEffectuated)]"
+							parentanchor = center
+							size = { 20 20 }
+							position = { -5 0 }
+							using = tooltip_se
+							tooltip = "TREATY_COUNTRY_HAS_OWED_OBLIGATION_WITH_EXPLANATION"
+							texture = "gfx/interface/icons/generic_icons/obligation_flipped.dds"
+						}
+
+						icon = {
+							visible = "[And(Treaty.DoesOweObligation(Country.Self), Not(Treaty.AreObligationsEffectuated))]"
+							parentanchor = center
+							size = { 20 20 }
+							position = { -5 0 }
+							using = tooltip_se
+							tooltip = "TREATY_COUNTRY_WILL_OWE_OBLIGATION_WITH_EXPLANATION"
+							texture = "gfx/interface/icons/generic_icons/obligation_flipped.dds"
+						}
+					}
+				}
+			}
+
+			### RIGHT SIDE ARTICLES
+			flowcontainer = {
+				parentanchor = right
+				margin = { 0 10 }
+				margin_right = 10
+				datacontext = "[Treaty.GetRightCountry]"
+				alpha = "[TransparentIfTrue(Treaty.IsFrozenFor(Country.Self))]"
+
+				dynamicgridbox = {
+					layoutanchor = topright
+					flipdirection = yes
+					datamodel = "[Treaty.GetDemands]"
+
+					block "treaty_item_articles_datamodel_wrap" {
+						datamodel_wrap = 3
+					}
+
+					item = {
+						article_icon_all_items = {}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+######################################
+# pinnable_outliner_items - modified
+# It's override vanilla pinnable_outliner_items - outliner_compact_treaty_item type
+######################################
+
+types uboy_ui_easy_withdraw_treaty_pinnable_outliner_items {
+	type outliner_compact_treaty_item = flowcontainer {
+		direction = vertical
+
+		tooltipwidget = {
+			FancyTooltip_Treaty = {}
+		}
+
+		# TREATY NAME & DURATION
+		widget = {
+			block "size" {
+				size = { @entry_width 30 }
+			}
+
+			background = {
+				using = fade_center_colored_black
+			}
+
+			### NAME
+			flowcontainer = {
+				position = { 5 0 }
+				parentanchor = vcenter
+				spacing = 5
+
+				### LEFT COUNTRY FLAG
+				tiny_flag_no_interact = {
+					parentanchor = vcenter
+					datacontext = "[Treaty.GetLeftCountry]"
+
+					blockoverride "tooltip" {}
+				}
+
+				### RIGHT COUNTRY FLAG
+				tiny_flag_no_interact = {
+					parentanchor = vcenter
+					datacontext = "[Treaty.GetRightCountry]"
+
+					blockoverride "tooltip" {}
+				}
+
+				textbox = {
+					visible = "[NotZero(Treaty.GetBindingDaysLeft)]"
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					using = elide_fontsize_min
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED
+					#max_width = 230
+					max_width = 205
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED END
+					margin_left = 2
+					text = "[Treaty.GetNameNoFormatting]"
+				}
+
+				textbox = {
+					visible = "[IsZero(Treaty.GetBindingDaysLeft)]"
+					parentanchor = vcenter
+					autoresize = yes
+					align = nobaseline
+					using = elide_fontsize_min
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED
+					#max_width = 260
+                    max_width = 205
+                    ### Uboy.UI-EASY_WITHDRAW_TREATY MODIFIED END
+					margin_left = 2
+					text = "[Treaty.GetNameNoFormatting]"
+				}                
+			}
+
+			textbox = {
+				visible = "[NotZero(Treaty.GetBindingDaysLeft)]"
+				position = { -20 0 }
+				align = nobaseline
+				parentanchor = right|vcenter
+				autoresize = yes
+				using = elide_fontsize_min
+				max_width = 25
+				text = "[LabelingHelper.GetRemainingDuration(Treaty.GetBindingPeriodEndGameDate.Self, '_SHORT')]"
+			}
+
+            button_icon_cancel = {
+                visible = "[IsZero(Treaty.GetBindingDaysLeft)]"
+                parentanchor = right|vcenter
+                position = { -25 0 }
+                size = { 20 20 }
+                tooltip = "TREATY_WITHDRAW_TOOLTIP"
+                enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
+                onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
+            }
+
+            button_icon_edit = {
+                parentanchor = right|vcenter
+                position = { -50 0 }
+                size = { 20 20 }
+                tooltip = "TREATY_RENEGOTIATE_TOOLTIP"
+                onclick = "[InformationPanelBar.OpenTreatyDraftPanel(Treaty.Self)]"
+                enabled = "[Not(Treaty.IsEnforced)]"
+            }
+
+            #### Uboy.UI-EASY_WITHDRAW_TREATY
+            #container = {
+            #    alwaystransparent = yes
+            #    parentanchor = right|vcenter
+            #    button_icon_cancel = {
+            #        visible = "[IsZero(Treaty.GetBindingDaysLeft)]"
+            #        parentanchor = right|vcenter
+            #        position = { -25 0 }
+            #        size = { 20 20 }
+            #        tooltip = "TREATY_WITHDRAW_TOOLTIP"
+            #        enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
+            #        onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
+            #    }
+#
+            #    button_icon_edit = {
+            #        parentanchor = right|vcenter
+            #        position = { -50 0 }
+            #        size = { 20 20 }
+            #        tooltip = "TREATY_RENEGOTIATE_TOOLTIP"
+            #        onclick = "[InformationPanelBar.OpenTreatyDraftPanel(Treaty.Self)]"
+            #        enabled = "[Not(Treaty.IsEnforced)]"
+            #    }
+            #}
+            #### Uboy.UI-EASY_WITHDRAW_TREATY END
+		}
+	}
+}
