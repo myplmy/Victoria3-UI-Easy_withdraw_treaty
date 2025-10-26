@@ -34,7 +34,7 @@ types uboy_ui_easy_withdraw_treaty_country_panel_treaties_types
 			flowcontainer = {
 				position = { 15 0 }
 				parentanchor = vcenter
-				spacing = 10
+				spacing = 5
 
 				textbox = {
 					parentanchor = vcenter
