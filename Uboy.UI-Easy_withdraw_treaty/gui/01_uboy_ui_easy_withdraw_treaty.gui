@@ -493,6 +493,7 @@ types uboy_ui_easy_withdraw_treaty_pinnable_outliner_items {
 				text = "[LabelingHelper.GetRemainingDuration(Treaty.GetBindingPeriodEndGameDate.Self, '_SHORT')]"
 			}
 
+            #### Uboy.UI-EASY_WITHDRAW_TREATY
             button_icon_cancel = {
                 visible = "[IsZero(Treaty.GetBindingDaysLeft)]"
                 parentanchor = right|vcenter
@@ -511,8 +512,6 @@ types uboy_ui_easy_withdraw_treaty_pinnable_outliner_items {
                 onclick = "[InformationPanelBar.OpenTreatyDraftPanel(Treaty.Self)]"
                 enabled = "[Not(Treaty.IsEnforced)]"
             }
-
-            #### Uboy.UI-EASY_WITHDRAW_TREATY
             #container = {
             #    alwaystransparent = yes
             #    parentanchor = right|vcenter
@@ -525,7 +524,7 @@ types uboy_ui_easy_withdraw_treaty_pinnable_outliner_items {
             #        enabled = "[IsValid(Treaty.WithdrawFromTreaty)]"
             #        onclick = "[PopupManager.AskConfirmationWithSound(Treaty.WithdrawFromTreaty, 'event:/SFX/UI/DiplomaticTreaties/diplomatic_treaties_revoke_neutral_button')]"
             #    }
-#
+            #
             #    button_icon_edit = {
             #        parentanchor = right|vcenter
             #        position = { -50 0 }
